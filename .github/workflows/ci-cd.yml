@@ -41,7 +41,7 @@ jobs:
 
       - name: Run tests
         run: |
-          npm test -- --ci --watchAll=false --passWithNoTests || (echo 'Tests failed' && exit 1)
+          npm run test:ci || (echo 'Tests failed' && exit 1)
 
   docker:
     name: Build and Push Docker Image
