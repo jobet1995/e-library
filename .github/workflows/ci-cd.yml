@@ -39,14 +39,15 @@ jobs:
               (echo 'Failed to commit formatting changes. Please check your git configuration.' && exit 1)
           fi
 
-      - name: Run tests if they exist
+      - name: Run tests
         run: |
-          # Check if any test files exist
-          if [ -n "$(find . -type f -name '*.test.*' -o -name '*.spec.*' | head -n 1)" ]; then
-            npm test || (echo 'Tests failed' && exit 1)
-          else
-            echo 'No test files found. Skipping tests.'
+          # Skip tests if the test directory doesn't exist
+          if [ ! -d "./test" ] && [ ! -d "./__tests__" ]; then
+            echo 'No test directory found. Skipping tests.'
+            exit 0
           fi
+          # If we get here, run the tests
+          npm test || (echo 'Tests failed' && exit 1)
 
   docker:
     name: Build and Push Docker Image
