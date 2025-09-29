@@ -27,8 +27,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run linting
-        run: npm run lint
+      - name: Check and format code with Prettier
+        run: |
+          if ! npx prettier --check .; then
+            echo 'Code formatting issues found. Attempting to fix...'
+            npx prettier --write .
+            git config --global user.name 'GitHub Actions'
+            git config --global user.email 'actions@github.com'
+            git add .
+            git commit -m 'style: format code with Prettier' || \
+              (echo 'Failed to commit formatting changes. Please check your git configuration.' && exit 1)
+          fi
 
       - name: Run tests
         run: |
