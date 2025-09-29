@@ -82,10 +82,12 @@ jobs:
         with:
           context: .
           push: true
+          target: runner
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'http://localhost:3000' }}
+            NODE_ENV=production
           cache-from: type=gha
           cache-to: type=gha,mode=max
           no-cache-filters: true

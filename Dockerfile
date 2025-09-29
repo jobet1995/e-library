@@ -38,6 +38,26 @@ RUN --mount=type=cache,target=/app/.next/cache \
     --mount=type=cache,target=/root/.npm \
     npm run build
 
+# Stage 4: Runner
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Install dependencies only needed for production
+RUN npm install -g serve
+
+# Copy the built application
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Start the application
+CMD ["node", "server.js"]
+
 # Stage 4: Development
 FROM base AS development
 WORKDIR /app
