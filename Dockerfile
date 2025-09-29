@@ -1,9 +1,10 @@
 # syntax = docker/dockerfile:1.4
 
-# Stage 1: Base with pnpm and dependencies
+# Stage 1: Base with Node.js
 FROM node:20-alpine AS base
 
-# Use npm instead of pnpm
+# Install dependencies required for building
+RUN apk add --no-cache libc6-compat
 
 # Stage 2: Dependencies
 FROM base AS deps
@@ -13,7 +14,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install dependencies with npm
-RUN npm ci
+RUN npm ci --prefer-offline --no-audit --progress=false
 
 # Stage 3: Builder
 FROM base AS builder
@@ -25,11 +26,16 @@ COPY . .
 
 # Environment variables
 ENV NEXT_TELEMETRY_DISABLED=1 \
-    NODE_ENV=development \
+    NODE_ENV=production \
     NODE_OPTIONS='--max-old-space-size=4096'
+
+# Set build time environment variables with defaults
+ARG NEXT_PUBLIC_API_URL=http://localhost:3000
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
 # Build the application
 RUN --mount=type=cache,target=/app/.next/cache \
+    --mount=type=cache,target=/root/.npm \
     npm run build
 
 # Stage 4: Development
