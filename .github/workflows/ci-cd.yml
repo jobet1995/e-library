@@ -41,7 +41,7 @@ jobs:
 
       - name: Run tests
         run: |
-          npm run test:ci || (echo 'Tests failed' && exit 1)
+          npx next test --no-watch --verbose || (echo 'Tests failed' && exit 1)
 
   docker:
     name: Build and Push Docker Image
