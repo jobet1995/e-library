@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(
-  _request: NextRequest,
-  context: { params: { id: string } },
-) {
+interface Context {
+  params: {
+    id: string;
+  };
+}
+
+export async function POST(_request: NextRequest, { params }: Context) {
   try {
-    const { id } = context.params;
+    const { id } = params;
 
     const borrow = await prisma.borrow.update({
       where: { id },

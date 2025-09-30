@@ -12,6 +12,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@farcaster/auth-kit": "^0.8.1",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "^6.16.2",
     "@radix-ui/react-accordion": "^1.2.12",
